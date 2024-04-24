@@ -1,0 +1,26 @@
+/* src/styles.css */
+
+/* Style for LeadList component */
+.lead-list {
+    margin-bottom: 20px;
+  }
+  
+  /* Style for individual list items */
+  .lead-list-item {
+    margin-bottom: 10px;
+  }
+
+/* styles.css */
+
+.update-lead-container {
+    padding: 20px; /* Add padding to create space around the component */
+  }
+  
+  .update-lead-form {
+    margin-bottom: 20px; /* Increase margin-bottom to create space below the form */
+  }
+  
+  .form-field {
+    margin-bottom: 16px;
+    color: red;
+  }
