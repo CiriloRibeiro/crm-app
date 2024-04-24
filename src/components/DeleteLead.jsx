@@ -17,7 +17,7 @@ const DeleteLead = () => {
 
   useEffect(() => {
     // Fetch lead details
-    axios.get(`http://127.0.0.1:8000/api/leads/change/${id}`)
+    axios.get(`https://django-crm-api.onrender.com/api/leads/change/${id}`) // Updated URL
       .then(response => {
         setLead(response.data);
       })
@@ -27,7 +27,7 @@ const DeleteLead = () => {
   }, [id]);
 
   const handleDelete = () => {
-    axios.delete(`http://127.0.0.1:8000/api/leads/change/${id}`)
+    axios.delete(`https://django-crm-api.onrender.com/api/leads/change/${id}`) // Updated URL
       .then(response => {
         console.log('Lead deleted successfully:', response.data);
         // Redirect to lead list after deletion

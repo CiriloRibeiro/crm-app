@@ -3,6 +3,11 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import LeadListButton from './LeadListButton';
 import { TextField, FormControl, InputLabel, Select, MenuItem, Button, Box } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles'; // Import ThemeProvider
+import Footer from './Footer';
+
+// Define your custom theme
+const theme = createTheme();
 
 const UpdateLead = () => {
   const { id } = useParams();
@@ -18,7 +23,7 @@ const UpdateLead = () => {
 
   useEffect(() => {
     // Fetch lead details
-    axios.get(`http://127.0.0.1:8000/api/leads/change/${id}`)
+    axios.get(`https://django-crm-api.onrender.com/api/leads/change/${id}`) // Updated URL
       .then(response => {
         setLead(response.data);
       })
@@ -27,7 +32,7 @@ const UpdateLead = () => {
       });
 
     // Fetch owners
-    axios.get('http://127.0.0.1:8000/api/users/')
+    axios.get('https://django-crm-api.onrender.com/api/users/') // Updated URL
       .then(response => {
         setOwners(response.data);
       })
@@ -45,7 +50,7 @@ const UpdateLead = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.put(`http://127.0.0.1:8000/api/leads/change/${id}`, lead)
+    axios.put(`https://django-crm-api.onrender.com/api/leads/change/${id}`, lead) // Updated URL
       .then(response => {
         console.log('Lead updated successfully:', response.data);
         // Optionally, redirect or show success message
@@ -56,74 +61,76 @@ const UpdateLead = () => {
   };
 
   return (
-    <div>
-      <h2>Update Lead</h2>
-      <form onSubmit={handleSubmit}>
-        {/* Input fields for lead details */}
-        <TextField
-          type="text"
-          name="first_name"
-          value={lead.first_name}
-          onChange={handleChange}
-          label="First Name"
-          fullWidth
-          sx={{ mb: 2 }} // Add margin bottom
-        />
-        <TextField
-          type="text"
-          name="last_name"
-          value={lead.last_name}
-          onChange={handleChange}
-          label="Last Name"
-          fullWidth
-          sx={{ mb: 2 }} // Add margin bottom
-        />
-        <TextField
-          type="text"
-          name="title"
-          value={lead.title}
-          onChange={handleChange}
-          label="Title"
-          fullWidth
-          sx={{ mb: 2 }} // Add margin bottom
-        />
-        <TextField
-          type="number"
-          name="age"
-          value={lead.age}
-          onChange={handleChange}
-          label="Age"
-          fullWidth
-          sx={{ mb: 2 }} // Add margin bottom
-        />
-        {/* Dropdown/select for status */}
-        <FormControl fullWidth sx={{ mb: 2 }}> {/* Add margin bottom */}
-          <InputLabel>Status</InputLabel>
-          <Select name="status" value={lead.status} onChange={handleChange}>
-            <MenuItem value="">Select Status</MenuItem>
-            <MenuItem value="Contacted">Contacted</MenuItem>
-            <MenuItem value="New Lead">New Lead</MenuItem>
-            <MenuItem value="Qualified">Qualified</MenuItem>
-          </Select>
-        </FormControl>
-        {/* Dropdown/select for owner using the owners state */}
-        <FormControl fullWidth sx={{ mb: 2 }}> {/* Add margin bottom */}
-          <InputLabel>Owner</InputLabel>
-          <Select name="owner" value={lead.owner} onChange={handleChange}>
-            <MenuItem value="">Select Owner</MenuItem>
-            {owners.map(owner => (
-              <MenuItem key={owner.id} value={owner.id}>{owner.username}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        {/* Submit button */}
-        <Box mt={2} display="flex" justifyContent="space-between"> {/* Add margin top and flexbox styling */}
-            <Button type="submit" variant="contained" color="primary">Update Lead</Button>
-            <LeadListButton />
-        </Box>
-      </form>
-
-    </div>
+    <ThemeProvider theme={theme}> {/* Apply the MUI theme */}
+      <div>
+        <h2>Update Lead</h2>
+        <form onSubmit={handleSubmit}>
+          {/* Input fields for lead details */}
+          <TextField
+            type="text"
+            name="first_name"
+            value={lead.first_name}
+            onChange={handleChange}
+            label="First Name"
+            fullWidth
+            sx={{ mb: 2 }} // Add margin bottom
+          />
+          <TextField
+            type="text"
+            name="last_name"
+            value={lead.last_name}
+            onChange={handleChange}
+            label="Last Name"
+            fullWidth
+            sx={{ mb: 2 }} // Add margin bottom
+          />
+          <TextField
+            type="text"
+            name="title"
+            value={lead.title}
+            onChange={handleChange}
+            label="Title"
+            fullWidth
+            sx={{ mb: 2 }} // Add margin bottom
+          />
+          <TextField
+            type="number"
+            name="age"
+            value={lead.age}
+            onChange={handleChange}
+            label="Age"
+            fullWidth
+            sx={{ mb: 2 }} // Add margin bottom
+          />
+          {/* Dropdown/select for status */}
+          <FormControl fullWidth sx={{ mb: 2 }}> {/* Add margin bottom */}
+            <InputLabel>Status</InputLabel>
+            <Select name="status" value={lead.status} onChange={handleChange}>
+              <MenuItem value="">Select Status</MenuItem>
+              <MenuItem value="Contacted">Contacted</MenuItem>
+              <MenuItem value="New Lead">New Lead</MenuItem>
+              <MenuItem value="Qualified">Qualified</MenuItem>
+            </Select>
+          </FormControl>
+          {/* Dropdown/select for owner using the owners state */}
+          <FormControl fullWidth sx={{ mb: 2 }}> {/* Add margin bottom */}
+            <InputLabel>Owner</InputLabel>
+            <Select name="owner" value={lead.owner} onChange={handleChange}>
+              <MenuItem value="">Select Owner</MenuItem>
+              {owners.map(owner => (
+                <MenuItem key={owner.id} value={owner.id}>{owner.username}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          {/* Submit button */}
+          <Box mt={2} display="flex" justifyContent="space-between"> {/* Add margin top and flexbox styling */}
+              <Button type="submit" variant="contained" color="primary">Update Lead</Button>
+              <LeadListButton />
+          </Box>
+        </form>
+        <Footer />
+      </div>
+    </ThemeProvider>
   );
 };
 

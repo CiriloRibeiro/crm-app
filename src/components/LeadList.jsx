@@ -1,43 +1,75 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { Button, List, ListItem, ListItemText } from '@mui/material';
+import { Button, Typography, Table, TableHead, TableBody, TableCell, TableRow } from '@mui/material';
 import CreateLeadButton from './CreateLeadButton';
+import Footer from './Footer';
 
 const LeadList = () => {
   const [leads, setLeads] = useState([]);
   const [error, setError] = useState(null);
+  const [ownersMap, setOwnersMap] = useState({});
 
   useEffect(() => {
-    // Fetch leads when the component mounts
-    axios.get('http://127.0.0.1:8000/api/leads/')
-      .then(res => {
-        setLeads(res.data);
+    // Fetch leads and owners when the component mounts
+    Promise.all([
+      axios.get('https://django-crm-api.onrender.com/api/leads/'), // Fetch leads
+      axios.get('https://django-crm-api.onrender.com/api/users/')    // Fetch owners
+    ])
+      .then(([leadsRes, ownersRes]) => {
+        setLeads(leadsRes.data);
+        const ownersData = ownersRes.data.reduce((acc, owner) => {
+          acc[owner.id] = owner.username;
+          return acc;
+        }, {});
+        setOwnersMap(ownersData);
       })
       .catch(error => {
-        console.error('Error fetching leads:', error);
-        setError('Failed to fetch leads');
+        console.error('Error fetching data:', error);
+        setError('Failed to fetch data');
       });
   }, []);
 
   return (
     <div>
-      <h2>Leads</h2>
+      <Typography variant="h2">Leads</Typography>
       {error && <p>Error: {error}</p>}
-      <List>
-        {leads.map(lead => (
-          <ListItem key={lead.id} className="lead-list-item"> {/* Apply lead-list-item class */}
-            <ListItemText primary={`${lead.first_name} ${lead.last_name}`} />
-            <Link to={`/update-lead/${lead.id}`}>
-              <Button variant="outlined" color="primary">Update</Button>
-            </Link>
-            <Link to={`/delete-lead/${lead.id}`}>
-              <Button variant="outlined" color="secondary">Delete</Button>
-            </Link>
-          </ListItem>
-        ))}
-      </List>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>First Name</TableCell>
+            <TableCell>Last Name</TableCell>
+            <TableCell>Title</TableCell>
+            <TableCell>Age</TableCell>
+            <TableCell>Status</TableCell>
+            <TableCell>Owner</TableCell>
+            <TableCell>Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {leads.map(lead => (
+            <TableRow key={lead.id}>
+              <TableCell>{lead.first_name}</TableCell>
+              <TableCell>{lead.last_name}</TableCell>
+              <TableCell>{lead.title}</TableCell>
+              <TableCell>{lead.age}</TableCell>
+              <TableCell>{lead.status}</TableCell>
+              <TableCell>{ownersMap[lead.owner]}</TableCell> {/* Display owner's name */}
+              <TableCell>
+                <Link to={`/update-lead/${lead.id}`}>
+                  <Button variant="outlined" color="primary">Update</Button>
+                </Link>
+                <Link to={`/delete-lead/${lead.id}`}>
+                  <Button variant="outlined" color="secondary">Delete</Button>
+                </Link>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>  
+      <br />
       <CreateLeadButton />
+      <Footer />
     </div>
   );
 };

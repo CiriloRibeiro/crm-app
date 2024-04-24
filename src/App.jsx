@@ -8,7 +8,19 @@ import UpdateLead from './components/UpdateLead';
 import DeleteLead from './components/DeleteLead';
 
 // Define your custom theme
-const theme = createTheme();
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#1976d2', // Adjust primary color as needed
+    },
+    secondary: {
+      main: '#dc004e', // Adjust secondary color as needed
+    },
+  },
+  typography: {
+    fontFamily: 'Arial, sans-serif', // Adjust font family as needed
+  },
+});
 
 const App = () => {
   return (
@@ -31,3 +43,4 @@ const App = () => {
 };
 
 export default App;
+
